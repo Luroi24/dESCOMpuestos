@@ -14,6 +14,7 @@ class SecondActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_second)
+
         val buttonNext: Button = findViewById(R.id.buttonNext)
         buttonNext.setOnClickListener{
             val intent = Intent(this, ThirdActivity::class.java)
@@ -24,6 +25,5 @@ class SecondActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-        Log.i(TAG, "onCreate: The second activity was successfully created.")
     }
 }

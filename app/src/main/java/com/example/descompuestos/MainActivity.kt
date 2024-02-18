@@ -43,6 +43,17 @@ class MainActivity : AppCompatActivity(), LocationListener {
             val intent = Intent(this, SecondActivity::class.java)
             startActivity(intent)
         }
+
+        val osmButton: Button = findViewById(R.id.buttonOSM)
+        osmButton.setOnClickListener{
+           if (latestLocation != null){
+                val intent = Intent(this, OSMActivity::class.java)
+                val bundle = Bundle()
+                bundle.putParcelable("location", latestLocation)
+                intent.putExtra("locationBundle", bundle)
+                startActivity(intent)
+           }else{ Log.e(TAG, "Location not set yet")}
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

@@ -7,11 +7,11 @@ import android.util.Log
 import android.widget.Button
 
 class ThirdActivity : AppCompatActivity() {
-    private val TAG: String = "ThirdActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_third)
-        Log.w(TAG, "onCreate: Change variable name \"TAG\". For good practices it should start with lowercase letters")
+        val TAG: String = "ThirdActivity"
+        Log.d(TAG, "onCreate: The third activity is being created")
 
         val buttonPrev: Button = findViewById(R.id.buttonPrev2)
         buttonPrev.setOnClickListener{
