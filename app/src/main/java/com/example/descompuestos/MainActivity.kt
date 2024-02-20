@@ -11,10 +11,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 
 class MainActivity : AppCompatActivity(), LocationListener {
-    private val TAG: String = "MainActivity"
+    private val TAG: String = "dESCOMpuestos"
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 2
     private var latestLocation: Location? = null
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
     override fun onLocationChanged(location: Location) {
         val textView: TextView = findViewById(R.id.mainTextView)
         this.latestLocation = location
+        Toast.makeText(this, "New coordinates: [${location.latitude},${location.longitude}]", Toast.LENGTH_LONG).show()
         textView.text = "Latitude: ${location.latitude}\nLongitude: ${location.longitude}"
     }
 }
