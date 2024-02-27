@@ -13,6 +13,8 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import android.widget.EditText
+import androidx.appcompat.app.AlertDialog
 
 class MainActivity : AppCompatActivity(), LocationListener {
     private val TAG: String = "dESCOMpuestos"
@@ -20,7 +22,49 @@ class MainActivity : AppCompatActivity(), LocationListener {
     private val locationPermissionCode = 2
     private var latestLocation: Location? = null
 
+    private fun askForUserId(){
+
+        val input = EditText(this);
+        var test: String ="";
+        AlertDialog.Builder(this)
+            .setTitle("Enter User Id")
+            .setIcon(R.mipmap.ic_launcher)
+            .setView(input)
+            .setPositiveButton("Save") { dialog, which ->
+                val userInput =  input.text.toString()
+                if (userInput.isNotBlank()){
+                    saveUserID(userInput)
+                    Toast.makeText(
+                    this,
+                    "UserID saved: $userInput",
+                    Toast.LENGTH_LONG
+
+                ).show();
+
+                }
+                else Toast.makeText(this, "User ID cannot be blank", Toast.LENGTH_LONG).show();
+            }.setNegativeButton("Cancel",null).show()
+    }
+
+    private fun saveUserID(userID : String){
+        val sharedPreferences = this.getSharedPreferences("AppPreferences",Context.MODE_PRIVATE);
+        sharedPreferences.edit().apply{
+            putString("userID",userID)
+            apply()
+        }
+    }
+
+    private fun getUserID():String?{
+        val sharedPreferences = this.getSharedPreferences("AppPreferences",Context.MODE_PRIVATE);
+        return sharedPreferences.getString("userID",null);
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        val userID = getUserID();
+        if(getUserID()== null) askForUserId()
+        else Toast.makeText(this,"UserID: $userID",Toast.LENGTH_LONG).show()
+
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         if(ActivityCompat.checkSelfPermission(
                 this,
