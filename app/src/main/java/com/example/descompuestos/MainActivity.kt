@@ -15,6 +15,24 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import java.util.HashMap
+import com.google.firebase.firestore.AggregateField
+import com.google.firebase.firestore.AggregateSource
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.MetadataChanges
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ServerTimestamp
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.Source
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.firestoreSettings
+import com.google.firebase.firestore.memoryCacheSettings
+import com.google.firebase.firestore.persistentCacheSettings
+import com.google.firebase.firestore.toObject
+import com.google.firebase.Firebase
 
 class MainActivity : AppCompatActivity(), LocationListener {
     private val TAG: String = "dESCOMpuestos"
@@ -23,7 +41,6 @@ class MainActivity : AppCompatActivity(), LocationListener {
     private var latestLocation: Location? = null
 
     private fun askForUserId(){
-
         val input = EditText(this);
         var test: String ="";
         AlertDialog.Builder(this)
@@ -62,6 +79,23 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val userID = getUserID();
+        /*
+        val db = Firebase.firestore;
+        val user = hashMapOf(
+            "email" to "ada@gmail.com",
+            "name" to "Juan Perez",
+            "password" to "juanito",
+        )
+        db.collection("users")
+            .add(user)
+            .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error adding document", e)
+            }
+
+         */
         if(getUserID()== null) askForUserId()
         else Toast.makeText(this,"UserID: $userID",Toast.LENGTH_LONG).show()
 
@@ -86,6 +120,12 @@ class MainActivity : AppCompatActivity(), LocationListener {
         val buttonNext: Button = findViewById(R.id.button)
         buttonNext.setOnClickListener{
             val intent = Intent(this, SecondActivity::class.java)
+            startActivity(intent)
+        }
+
+        val buttonLogin: Button = findViewById(R.id.buttonLogin)
+        buttonLogin.setOnClickListener{
+            val intent = Intent(this, MainActivity2::class.java)
             startActivity(intent)
         }
 
