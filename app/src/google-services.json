@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "112269723382",
+    "project_id": "madridmug",
+    "storage_bucket": "madridmug.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:112269723382:android:a6e4b2355dff897f9a8ed7",
+        "android_client_info": {
+          "package_name": "com.example.descompuestos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpLdCLqjcgI6fYE-YMiyMdCguFjv0D0-s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
