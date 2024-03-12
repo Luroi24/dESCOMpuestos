@@ -79,23 +79,6 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val userID = getUserID();
-        /*
-        val db = Firebase.firestore;
-        val user = hashMapOf(
-            "email" to "ada@gmail.com",
-            "name" to "Juan Perez",
-            "password" to "juanito",
-        )
-        db.collection("users")
-            .add(user)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-            }
-
-         */
         if(getUserID()== null) askForUserId()
         else Toast.makeText(this,"UserID: $userID",Toast.LENGTH_LONG).show()
 

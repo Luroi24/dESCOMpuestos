@@ -12,7 +12,12 @@
           "package_name": "com.example.descompuestos"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "112269723382-n033u7aidqi4c4phb487t9vt04spnh9u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDpLdCLqjcgI6fYE-YMiyMdCguFjv0D0-s"
@@ -20,7 +25,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "112269723382-n033u7aidqi4c4phb487t9vt04spnh9u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
