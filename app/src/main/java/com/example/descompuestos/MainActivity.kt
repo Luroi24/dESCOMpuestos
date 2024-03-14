@@ -1,5 +1,6 @@
 package com.example.descompuestos
 
+import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
@@ -71,7 +72,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
     private fun saveUserID(userID : String){
         val sharedPreferences =
-            this.getSharedPreferences("AppPreferences",Context.MODE_PRIVATE);
+            this.getSharedPreferences("AppPreferences", MODE_PRIVATE);
         if (sharedPreferences != null) {
             sharedPreferences.edit().apply{
                 putString("userID",userID)
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
     private fun getUserID():String?{
         val sharedPreferences =
-            this.getSharedPreferences("AppPreferences",Context.MODE_PRIVATE);
+            this.getSharedPreferences("AppPreferences", MODE_PRIVATE);
         return if (sharedPreferences != null) {
             sharedPreferences.getString("userID",null)
         };
@@ -100,20 +101,20 @@ class MainActivity : AppCompatActivity(), LocationListener {
         if(getUserID()== null) askForUserId()
         else Toast.makeText(this,"UserID: $userID", Toast.LENGTH_LONG).show()
 
-        locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager = this.getSystemService(LOCATION_SERVICE) as LocationManager
         if(this.let {
                 ActivityCompat.checkSelfPermission(
                     it.applicationContext,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    Manifest.permission.ACCESS_FINE_LOCATION)
             } != PackageManager.PERMISSION_GRANTED && this.let {
                 ActivityCompat.checkSelfPermission(
                     it.applicationContext,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                    Manifest.permission.ACCESS_COARSE_LOCATION)
             } != PackageManager.PERMISSION_GRANTED){
             this.let {
                 ActivityCompat.requestPermissions(
                     it,
-                    arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION),
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
                     locationPermissionCode
                 )
             }
@@ -150,7 +151,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == locationPermissionCode) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (let { ActivityCompat.checkSelfPermission(it.applicationContext, android.Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED)
+                if (let { ActivityCompat.checkSelfPermission(it.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION) } == PackageManager.PERMISSION_GRANTED)
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
             }
         }
