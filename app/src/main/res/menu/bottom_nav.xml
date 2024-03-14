@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/home"
+        android:iconTint="#F8DF85"
+        android:title="@string/home" />
+    <item
+        android:id="@+id/nav_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/location"
+        android:iconTint="#F8DF85"
+        android:title="@string/map" />
+    <item
+        android:id="@+id/nav_visited"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/liked"
+        android:iconTint="#F8DF85"
+        android:title="@string/visited" />
+    <item
+        android:id="@+id/nav_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/profile"
+        android:iconTint="#F8DF85"
+        android:title="@string/profile" />
+</menu>
