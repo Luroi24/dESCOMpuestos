@@ -13,6 +13,24 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
+import java.util.HashMap
+import com.google.firebase.firestore.AggregateField
+import com.google.firebase.firestore.AggregateSource
+import com.google.firebase.firestore.DocumentChange
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.firestore.MetadataChanges
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ServerTimestamp
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.Source
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.firestoreSettings
+import com.google.firebase.firestore.memoryCacheSettings
+import com.google.firebase.firestore.persistentCacheSettings
+import com.google.firebase.firestore.toObject
+import com.google.firebase.Firebase
 import androidx.fragment.app.Fragment
 import com.example.descompuestos.databinding.ActivityMainBinding
 import org.osmdroid.views.MapView
@@ -65,11 +83,13 @@ class MainActivity : AppCompatActivity(), LocationListener {
     private fun getUserID():String?{
         val sharedPreferences =
             this.getSharedPreferences("AppPreferences",Context.MODE_PRIVATE);
-        if (sharedPreferences != null) {
-            return sharedPreferences.getString("userID",null)
+        return if (sharedPreferences != null) {
+            sharedPreferences.getString("userID",null)
         };
-        else return "Shared preferences is empty"
+        else "Shared preferences is empty"
     }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -135,7 +155,6 @@ class MainActivity : AppCompatActivity(), LocationListener {
             }
         }
     }
-
     override fun onLocationChanged(location: Location) {
         //val textView: TextView = findViewById(R.id.tvInfo)
         this.latestLocation = location
