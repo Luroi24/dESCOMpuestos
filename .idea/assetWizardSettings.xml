@@ -101,8 +101,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\monts\Downloads\DALL_E_2024-02-18_23.48.21_-_a_minimalistic_camera__digital_art-removebg-preview.png" />
-                                                <entry key="scalingPercent" value="92" />
+                                                <entry key="imagePath" value="C:\Users\monts\Downloads\MadridMug.jpg" />
+                                                <entry key="scalingPercent" value="81" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -136,8 +136,7 @@
                                     <map>
                                       <entry key="backgroundAssetType" value="COLOR" />
                                       <entry key="backgroundColor" value="ffffff" />
-                                      <entry key="foregroundLayerName" value="ic_osm_camera_asset" />
-                                      <entry key="outputName" value="ic_osm_camera" />
+                                      <entry key="previewDensity" value="MEDIUM" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -303,6 +302,11 @@
                                       </entry>
                                     </map>
                                   </option>
+                                  <option name="values">
+                                    <map>
+                                      <entry key="previewDensity" value="MEDIUM" />
+                                    </map>
+                                  </option>
                                 </PersistentState>
                               </value>
                             </entry>
@@ -331,7 +335,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialsymbolsrounded/favorite/rounded_favorite_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialsymbolsrounded/keyboard_arrow_down/rounded_keyboard_arrow_down_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -341,8 +345,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="fbe287" />
-                            <entry key="outputName" value="liked" />
+                            <entry key="color" value="675e40" />
+                            <entry key="outputName" value="arrow_down" />
                             <entry key="sourceFile" value="C:\Luis\MAD" />
                           </map>
                         </option>

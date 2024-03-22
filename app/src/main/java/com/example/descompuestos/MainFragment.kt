@@ -1,5 +1,6 @@
 package com.example.descompuestos
 
+import MyAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -7,6 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,6 +36,12 @@ class MainFragment : Fragment() {
         val myDataFromActivity: String = activity.getMyData()
         val textView: TextView = view.findViewById(R.id.tvInfo)
         textView.text = myDataFromActivity
+
+        val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val dataList = listOf("Juanito Cafetería", "Esther Café", "Woefein", "Item 4", "Item 5")
+        val adapter = MyAdapter(dataList)
+        recyclerView.adapter = adapter
     }
     companion object {
         @JvmStatic
