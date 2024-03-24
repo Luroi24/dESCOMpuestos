@@ -335,7 +335,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialsymbolsrounded/keyboard_arrow_down/rounded_keyboard_arrow_down_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/star_half/baseline_star_half_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -345,8 +345,8 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="675e40" />
-                            <entry key="outputName" value="arrow_down" />
+                            <entry key="color" value="d8d138" />
+                            <entry key="outputName" value="star_half" />
                             <entry key="sourceFile" value="C:\Luis\MAD" />
                           </map>
                         </option>

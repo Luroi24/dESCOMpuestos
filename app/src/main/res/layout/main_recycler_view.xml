@@ -24,7 +24,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rv_cl"
             android:layout_width="120dp"
-            android:layout_height="53dp"
+            android:layout_height="62dp"
             android:padding="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -36,18 +36,26 @@
             <TextView
                 android:id="@+id/rv_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Title"
+                android:layout_height="24dp"
+                android:fontFamily="@font/inter_medium"
+                android:textColor="@color/white"
+                android:text="Test Test Test Test"
+                android:background="@drawable/rv_text"
+                android:gravity="center_vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constrainedWidth="true"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/rv_stars"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Stars"
+                android:background="@drawable/rv_text"
+                android:fontFamily="@font/inter_medium"
+                android:gravity="center"
+                android:text="⭐4.8 "
+                android:textColor="@color/white"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
