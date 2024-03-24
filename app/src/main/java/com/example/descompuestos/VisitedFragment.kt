@@ -22,6 +22,8 @@ private const val ARG_PARAM2 = "param2"
 class VisitedFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
+    val dataList = listOf("toReview", "toReview2", "toReview3","toReview4", "toReview5", "toReview6")
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,13 +44,36 @@ class VisitedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Setting up the listView
+        /*
         val listView: ListView = view.findViewById(R.id.listOfPlaces)
-        val headerView = layoutInflater.inflate(R.layout.listview_header, listView, false)
-        listView.addHeaderView(headerView, null, false)
-
         val adapter = context?.let { CoordinatesAdapter(it, readFileContents()) }
-        listView.adapter = adapter
+        listView.adapter = adapter*/
+        // Setting up the list of pending to review places
+        val reviewsListView = view.findViewById<ListView>(R.id.listOfPlaces)
+        val reviewsAdapter = CustomAdapter(requireContext(), dataList)
+        reviewsListView.adapter = reviewsAdapter
+        reviewsListView.setOnItemClickListener { parent, view, position, id ->
+            // Load the fragment based on the clicked item
+            loadFragment(position)
+        }
 
+        // Setting up list of visited places
+        val visitedListView = view.findViewById<ListView>(R.id.listOfPlacesReviewed)
+        val reviewed = listOf("Reviewed", "Reviewed2", "Reviewed3","Reviewed", "Reviewed2", "Reviewed3")
+        val reviewedAdapter = ReviewedAdapter(requireContext(),reviewed)
+        visitedListView.adapter = reviewedAdapter
+    }
+
+    fun loadFragment(position: Int){
+        val bundle = Bundle()
+        bundle.putInt("id", 2)
+        bundle.putString("cafeteriaTitle", dataList[position])
+        val fragment = WriteRatingFragment()
+        fragment.arguments = bundle
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.mainFrameLayout, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     companion object {
@@ -61,6 +86,34 @@ class VisitedFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    class ReviewedAdapter(context: Context, private val dataList: List<String>) :
+        ArrayAdapter<String>(context, 0, dataList) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            var itemView = convertView
+            if (itemView == null) {
+                itemView = LayoutInflater.from(context).inflate(R.layout.visited_lv_item_noaction, parent, false)
+            }
+            val textView = itemView!!.findViewById<TextView>(R.id.reviewed_placeTitle)
+            textView.text = dataList[position]
+            return itemView
+        }
+    }
+
+    class CustomAdapter(context: Context, private val dataList: List<String>) :
+        ArrayAdapter<String>(context, 0, dataList) {
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+            var itemView = convertView
+            if (itemView == null) {
+                itemView = LayoutInflater.from(context).inflate(R.layout.visited_lv_item, parent, false)
+            }
+            val textView = itemView!!.findViewById<TextView>(R.id.visited_placeTitle)
+            textView.text = dataList[position]
+            return itemView
+        }
     }
 
     private class CoordinatesAdapter(context: Context, private val coordinatesList: List<List<String>>): ArrayAdapter<List<String>>(context, R.layout.listview_item, coordinatesList){
