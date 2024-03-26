@@ -1,41 +1,38 @@
 package com.example.descompuestos
 
 import android.Manifest
-import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.TextView
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import java.util.HashMap
-import com.google.firebase.firestore.AggregateField
-import com.google.firebase.firestore.AggregateSource
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.MetadataChanges
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ServerTimestamp
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.Source
-import com.google.firebase.firestore.firestore
-import com.google.firebase.firestore.firestoreSettings
-import com.google.firebase.firestore.memoryCacheSettings
-import com.google.firebase.firestore.persistentCacheSettings
-import com.google.firebase.firestore.toObject
-import com.google.firebase.Firebase
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.example.descompuestos.databinding.ActivityMainBinding
-import org.osmdroid.views.MapView
+import com.google.firebase.firestore.ktx.firestore
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.io.File
+import java.lang.reflect.Type
+
+
+class Store(
+    val storeName : String,
+    val imageLinks : List<String>,
+    val idPlace : Long,
+    val ratingPlace : Double,
+    val coordinates: Pair<Double,Double>,
+    val description: String
+){ }
 
 class MainActivity : AppCompatActivity(), LocationListener {
     private val TAG: String = "dESCOMpuestos"
@@ -70,6 +67,87 @@ class MainActivity : AppCompatActivity(), LocationListener {
         }
     }
 
+    private fun retrieveData(){
+        var dataList = arrayListOf<String>();
+        var imgUrls = arrayListOf<String>();
+
+        var string : String = "";
+
+        var storeName : String? = null
+        var imageLinks : List<String>? = null
+        var idPlace : Long? = null
+        var ratingPlace : Double? = null
+        var coordinates: Pair<Double,Double>? = null
+        var description: String? = null;
+
+
+        var gson = Gson()
+        val type: Type = object : TypeToken<ArrayList<Store?>?>() {}.getType()
+
+        val prueba = mutableListOf<Store>()
+
+        val db = com.google.firebase.ktx.Firebase.firestore.collection("places")
+        GlobalScope.launch(Dispatchers.IO){
+            var documents = db.get().await()
+            documents.forEach{
+                    it->
+                storeName = it.data.get("name").toString();                     //Get Name
+                imageLinks = it.data.get("imgURLs") as List<String>;        //Get Images
+                idPlace = it.data.get("id") as Long;                        //Get id
+                var temp = it.data.get("location") as List<Double>
+                var pairTemp = Pair(temp.get(0),temp.get(1))
+                coordinates = pairTemp
+                ratingPlace = it.data.get("rating") as Double
+                description = it.data.get("description").toString()
+
+
+                Log.i("test", "storeName: $storeName");
+                Log.i("test", "imageLinks: $imageLinks");
+                Log.i("test", "idPlace: $idPlace");
+                Log.i("test", "coordinates: $coordinates");
+                Log.i("test", "ratingPlace: $ratingPlace");
+                Log.i("test","description: $description")
+
+                var item = Store(storeName!!,imageLinks!!,idPlace!!,ratingPlace!!,coordinates!!,description!!)
+                prueba.add(item)
+            }
+
+            string = gson.toJson(prueba,type)
+
+            Log.i("finalTest",string)
+
+        }
+
+       while(string.length == 0) {
+       }
+
+        val sharedPreferences = this.getSharedPreferences("AppData", MODE_PRIVATE);
+        if(sharedPreferences != null){
+            sharedPreferences.edit().apply{
+                putString("test",string)
+                apply()
+            }
+        }
+
+    }
+
+
+    private fun printData(){
+        var x : String = "";
+        var y : String = "";
+        val sharedPreferences = this.getSharedPreferences("AppData", MODE_PRIVATE);
+        if(sharedPreferences != null){
+             x = sharedPreferences.getString("dataList",null) as String;
+             y = sharedPreferences.getString("imageURLs",null).toString();
+        }
+        //Log.i("AppDataLog",x);
+        //Log.i("AppDataLog",y);
+    }
+
+
+
+
+
     private fun saveUserID(userID : String){
         val sharedPreferences =
             this.getSharedPreferences("AppPreferences", MODE_PRIVATE);
@@ -92,6 +170,10 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        retrieveData()
+        printData()
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.d(TAG, "onCreate: The main activity is being created")

@@ -1,5 +1,4 @@
 // MyAdapter.kt
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +7,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.descompuestos.R
+import com.example.descompuestos.Store
 
-class MyAdapter(private val dataList: List<String>,
-                private val mImageUrls: List<String>,
+class MyAdapter(private val dataList: ArrayList<Store>,
+
                 private val layoutResId: Int) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
 
     private var onItemClickListener: OnItemClickListener? = null
@@ -28,8 +28,8 @@ class MyAdapter(private val dataList: List<String>,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(dataList[position])
-        holder.bindImage(mImageUrls[position])
+        holder.bind(dataList[position].storeName)                 //Cambia el nombre
+        holder.bindImage(dataList[position].imageLinks[0])          //Cambia las imagenes
     }
 
     override fun getItemCount(): Int {

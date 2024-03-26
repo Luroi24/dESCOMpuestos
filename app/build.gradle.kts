@@ -81,7 +81,11 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("com.google.firebase:firebase-auth")
     implementation("com.firebaseui:firebase-ui-auth:7.2.0")
+    implementation("com.google.firebase:firebase-storage")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.android.gms:play-services-tasks:18.1.0")
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+    implementation("com.google.code.gson:gson:2.6.2")
 }
