@@ -24,8 +24,8 @@ private const val ARG_PARAM2 = "param2"
 class MainFragment : Fragment() {
 
 
-    var dataList = arrayListOf<String>();
-    var imgUrls = arrayListOf<String>()
+    //var dataList = arrayListOf<String>();
+    //var imgUrls = arrayListOf<String>()
 
     var itemsTest = arrayListOf<Store>()
 
@@ -68,18 +68,6 @@ class MainFragment : Fragment() {
         val type: Type = object : TypeToken<ArrayList<Store?>?>() {}.getType()
         val pruebaEnFragmento : ArrayList<Store> = gson.fromJson(testing,type)
         itemsTest = pruebaEnFragmento;
-        pruebaEnFragmento.forEach {
-            it->
-            //Log.i("AppDataLog", it.storeName)
-            dataList.add(it.storeName)
-            it.imageLinks.forEach {
-                it1 ->
-                Log.i("AppDataLog", it1)
-                imgUrls.add(it1)
-            }
-        }
-        //dataList.add(pruebaEnFragmento[0].storeName);
-        //imgUrls.add(pruebaEnFragmento[0].imageLinks[0])
     }
 
 
@@ -123,8 +111,10 @@ class MainFragment : Fragment() {
                 override fun onItemClick(position: Int) {
                     val bundle = Bundle()
                     bundle.putInt("id",position)
-                    bundle.putString("title", dataList[position])
-                    bundle.putStringArrayList("imgUrls", ArrayList(imgUrls))
+                    bundle.putString("title", itemsTest[position].storeName)
+                    bundle.putStringArrayList("imgUrls", ArrayList(itemsTest[position].imageLinks))
+                    bundle.putString("description", itemsTest[position].description)
+                    bundle.putString("rating",itemsTest[position].ratingPlace.toString())
                     val fragment = PlaceDetails()
                     fragment.arguments = bundle
                     val transaction = requireActivity().supportFragmentManager.beginTransaction()

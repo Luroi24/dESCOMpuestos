@@ -31,7 +31,8 @@ class Store(
     val idPlace : Long,
     val ratingPlace : Double,
     val coordinates: Pair<Double,Double>,
-    val description: String
+    val description: String,
+    val category: String
 ){ }
 
 class MainActivity : AppCompatActivity(), LocationListener {
@@ -79,7 +80,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         var ratingPlace : Double? = null
         var coordinates: Pair<Double,Double>? = null
         var description: String? = null;
-
+        var cate: String? = null;
 
         var gson = Gson()
         val type: Type = object : TypeToken<ArrayList<Store?>?>() {}.getType()
@@ -99,6 +100,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
                 coordinates = pairTemp
                 ratingPlace = it.data.get("rating") as Double
                 description = it.data.get("description").toString()
+                cate = it.data.get("category").toString()
 
 
                 Log.i("test", "storeName: $storeName");
@@ -107,8 +109,9 @@ class MainActivity : AppCompatActivity(), LocationListener {
                 Log.i("test", "coordinates: $coordinates");
                 Log.i("test", "ratingPlace: $ratingPlace");
                 Log.i("test","description: $description")
+                Log.i("test","category: $cate")
 
-                var item = Store(storeName!!,imageLinks!!,idPlace!!,ratingPlace!!,coordinates!!,description!!)
+                var item = Store(storeName!!,imageLinks!!,idPlace!!,ratingPlace!!,coordinates!!,description!!,cate!!)
                 prueba.add(item)
             }
 
@@ -137,8 +140,8 @@ class MainActivity : AppCompatActivity(), LocationListener {
         var y : String = "";
         val sharedPreferences = this.getSharedPreferences("AppData", MODE_PRIVATE);
         if(sharedPreferences != null){
-             x = sharedPreferences.getString("dataList",null) as String;
-             y = sharedPreferences.getString("imageURLs",null).toString();
+             //x = sharedPreferences.getString("dataList",null) as String;
+             //y = sharedPreferences.getString("imageURLs",null).toString();
         }
         //Log.i("AppDataLog",x);
         //Log.i("AppDataLog",y);

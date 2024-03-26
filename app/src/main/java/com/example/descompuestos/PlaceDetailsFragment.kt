@@ -18,6 +18,8 @@ private const val ARG_PARAM2 = "param2"
 class PlaceDetails : Fragment() {
     var placeId: Int? = null
     var title: String? = ""
+    var description: String? = ""
+    var rating: String? = ""
     lateinit var placeImg: List<String>
 
     override fun onCreateView(
@@ -28,6 +30,8 @@ class PlaceDetails : Fragment() {
         val data = arguments
         placeId = data?.getInt("id")
         title = data?.getString("title")
+        description = data?.getString("description")
+        rating = data?.getString("rating")
         var aux = data?.getStringArrayList("imgUrls")
         if (aux != null) {
             placeImg = aux.toList()
@@ -49,6 +53,12 @@ class PlaceDetails : Fragment() {
         // Setting up the correct text for each item that has been selected.
         val placeTitle: TextView = view.findViewById(R.id.pd_title)
         placeTitle.text = title
+
+        val placeDescription: TextView = view.findViewById(R.id.pd_description)
+        placeDescription.text = description
+
+        val placeRating: TextView = view.findViewById(R.id.pd_rating)
+        placeRating.text = rating
 
         // Setting the stuff for the reviews listview
         val reviewsListView = view.findViewById<ListView>(R.id.pd_reviews)
