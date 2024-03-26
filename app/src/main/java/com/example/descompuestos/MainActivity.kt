@@ -213,7 +213,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
                 R.id.nav_home -> replaceFragment(MainFragment())
                 R.id.nav_map -> replaceFragment(OSMFragment())
                 R.id.nav_visited -> replaceFragment(VisitedFragment())
-                R.id.nav_profile -> replaceFragment(VisitedFragment())
+                R.id.nav_profile -> replaceFragment(ProfileFragment())
                 else ->{
 
                 }
