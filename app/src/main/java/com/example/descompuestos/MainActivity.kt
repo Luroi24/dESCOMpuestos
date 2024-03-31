@@ -2,6 +2,7 @@ package com.example.descompuestos
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -18,7 +19,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.example.descompuestos.databinding.ActivityMainBinding
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
@@ -213,8 +216,28 @@ class MainActivity : AppCompatActivity(), LocationListener {
     }
 
 
+    fun authUsers(){
+        val user = Firebase.auth
+        if(user.currentUser == null){
+            val intent = Intent(this, UserAuthenticator::class.java)
+            startActivity(intent)
+            val db = Firebase.firestore
+            val userD = hashMapOf(
+                "location" to "Not set",
+                "id" to user.currentUser?.uid.toString(),
+                "profileURL" to "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png"
+            )
+
+            db.collection("users").document().set(userD)
+
+        }
+
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         retrieveData()
+        authUsers()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.d(TAG, "onCreate: The main activity is being created")
