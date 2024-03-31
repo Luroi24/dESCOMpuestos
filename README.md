@@ -30,13 +30,13 @@ MadridMug is the mobile application any coffee lover should have installed on th
     </td>
     <td>
       <img src="https://github.com/Luroi24/dESCOMpuestos/assets/78554741/a1d08bc1-2819-4ab1-b51f-642c9a5accbe" width="80%" alt="Map menu option"/>
-      <p align="center">The map menu option shows a generic OSM map, specifying the user current location with a personalized logo as well as the nearest cafeterias to their current location (which also is shown as a personalized logo)</p>
+      <p align="center">The map menu option shows a generic OSM map, specifying the user's current location with a personalized logo as well as the nearest cafeterias to their current location (which also is shown as a personalized logo)</p>
     </td>
   </tr>
   <tr>
     <td>
       <img src="https://github.com/Luroi24/dESCOMpuestos/assets/78554741/58b5651c-ef81-43bf-a0d6-8fdcc952b027" width="80%" alt="Profile menu option"/>
-      <p align="center">The profile menu option shows the users shared preferences, for instance, their username, email, country and picture</p>
+      <p align="center">The profile menu option shows the users shared preferences, for instance, their username, email, country, and picture</p>
     </td>
     <td>
     </td>
@@ -48,7 +48,7 @@ MadridMug is the mobile application any coffee lover should have installed on th
     </td>
     <td>
       <img src="https://github.com/Luroi24/dESCOMpuestos/assets/78554741/0842be15-ac99-47ed-b78f-00fbaf25bf5a" width="80%" alt="Route to the cafeteria button"/>
-      <p align="center">If the user chooses to, they can see the location of the cafeteria and a map will pop up, with a simple straight line showing how far they are from it.</p>
+      <p align="center">If the user chooses to, they can see the location of the cafeteria, and a map will pop up, with a simple straight line showing how far they are from it.</p>
     </td>
   </tr>
 </table>
@@ -56,7 +56,7 @@ MadridMug is the mobile application any coffee lover should have installed on th
 
 
 ## Demo Video
-<a href="https://vimeo.com/410664338?share=copy">
+<a href="https://www.youtube.com/watch?v=HYwL3iM5Ud8">
   Click here to watch the demo video!
 </a>
 
@@ -82,7 +82,7 @@ Technical features of MadridMug:
 - Bundles
 
 ## How to Use
-### Firt steps
+### First steps
 The user must first create an account to access the app. They can choose to do so using a personal email or directly link their Google account. Once they've done it, they have full access to MadridMug, where they can search for cafeterias and leave reviews, only if they have visited them!
 ### Playing around
 The cafeteria details:<br/>
