@@ -40,6 +40,16 @@ class Store(
     val category: String
 ){ }
 
+class Review(
+    val description: String,
+    val idPlace : Long,
+    val userName : String,
+    val userID : String,
+    val rating: Double
+){ }
+
+
+
 class MainActivity : AppCompatActivity(), LocationListener {
     private val TAG: String = "dESCOMpuestos"
     private lateinit var binding: ActivityMainBinding
@@ -79,6 +89,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
         var imgUrls = arrayListOf<String>();
 
         var string : String = "";
+        var string1 : String = "";
 
         var storeName : String? = null
         var imageLinks : List<String>? = null
@@ -88,10 +99,20 @@ class MainActivity : AppCompatActivity(), LocationListener {
         var description: String? = null;
         var cate: String? = null;
 
+        var descRev: String? = null
+        var idPlaceRev : Long? = null
+        var userIDRev : String? = null
+        var ratingRev: Double? = null
+        var userName : String? = null;
+
         var gson = Gson()
         val type: Type = object : TypeToken<ArrayList<Store?>?>() {}.getType()
 
+        var gson1 = Gson()
+        val type1: Type = object : TypeToken<ArrayList<Review?>?>() {}.getType()
+
         val prueba = mutableListOf<Store>()
+        val reviewsArray = mutableListOf<Review>()
 
         val db = com.google.firebase.ktx.Firebase.firestore.collection("places")
         GlobalScope.launch(Dispatchers.IO){
@@ -127,7 +148,34 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
         }
 
-       while(string.length == 0) {
+        val rev = com.google.firebase.ktx.Firebase.firestore.collection("reviews")
+
+        GlobalScope.launch(Dispatchers.IO){
+            var documents = rev.get().await()
+            documents.forEach{
+                    it1->
+                descRev = it1.data.get("description").toString();
+                idPlaceRev = it1.data.get("placeID") as Long;
+                userIDRev = it1.data.get("userID") as String;
+                ratingRev = it1.data.get("rating") as Double;
+                userName = it1.data.get("userName") as String;
+
+                Log.i("revTest", "descRev: $descRev");
+                Log.i("revTest", "idPlaceRev: $idPlaceRev");
+                Log.i("revTest", "userIDRev: $userIDRev");
+                Log.i("revTest", "ratingRev: $ratingRev");
+
+                var item1 = Review(descRev!!,idPlaceRev!!,userName!!,userIDRev!!,ratingRev!!)
+                reviewsArray.add(item1)
+            }
+
+            string1 = gson1.toJson(reviewsArray,type1)
+
+            Log.i("reviewsFinal",string1)
+
+        }
+
+       while(string.length == 0 || string1.length==0) {
        }
 
         val sharedPreferences = this.getSharedPreferences("AppData", MODE_PRIVATE);
@@ -136,26 +184,13 @@ class MainActivity : AppCompatActivity(), LocationListener {
                 putString("test",string)
                 apply()
             }
+            sharedPreferences.edit().apply{
+                putString("reviews",string1)
+                apply()
+            }
         }
 
     }
-
-
-    private fun printData(){
-        var x : String = "";
-        var y : String = "";
-        val sharedPreferences = this.getSharedPreferences("AppData", MODE_PRIVATE);
-        if(sharedPreferences != null){
-             //x = sharedPreferences.getString("dataList",null) as String;
-             //y = sharedPreferences.getString("imageURLs",null).toString();
-        }
-        //Log.i("AppDataLog",x);
-        //Log.i("AppDataLog",y);
-    }
-
-
-
-
 
     private fun saveUserID(userID : String){
         val sharedPreferences =
@@ -179,10 +214,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         retrieveData()
-        printData()
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         Log.d(TAG, "onCreate: The main activity is being created")
