@@ -10,7 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.RatingBar
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -22,6 +27,11 @@ private const val ARG_PARAM2 = "param2"
 class VisitedFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
+
+
+
+
+
     val dataList = listOf("toReview", "toReview2", "toReview3","toReview4", "toReview5", "toReview6")
 
 
@@ -44,10 +54,7 @@ class VisitedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Setting up the listView
-        /*
-        val listView: ListView = view.findViewById(R.id.listOfPlaces)
-        val adapter = context?.let { CoordinatesAdapter(it, readFileContents()) }
-        listView.adapter = adapter*/
+
         // Setting up the list of pending to review places
         val reviewsListView = view.findViewById<ListView>(R.id.listOfPlaces)
         val reviewsAdapter = CustomAdapter(requireContext(), dataList)
@@ -59,9 +66,35 @@ class VisitedFragment : Fragment() {
 
         // Setting up list of visited places
         val visitedListView = view.findViewById<ListView>(R.id.listOfPlacesReviewed)
-        val reviewed = listOf("Reviewed", "Reviewed2", "Reviewed3","Reviewed", "Reviewed2", "Reviewed3")
-        val reviewedAdapter = ReviewedAdapter(requireContext(),reviewed)
-        visitedListView.adapter = reviewedAdapter
+
+        val db = Firebase.firestore
+        val user = Firebase.auth
+        val userID = user.currentUser?.uid
+        //val userID = "1zZN5372jIRzwZCKyEfNGIM8weQ2"
+        var infoListed = mutableListOf<Pair<String?,Double?>>()
+        var nameP: String? = null;
+        var reviewV : Double? = null;
+
+        db.collection("reviews").whereEqualTo("userID",userID).get().addOnSuccessListener {
+                task ->
+            for(document in task){
+
+                db.collection("places").whereEqualTo("id",document.data.get("placeID").toString().toInt()).get().addOnSuccessListener { it1 ->
+                    for(document1 in it1){
+                        nameP = document1.data.get("name").toString()
+                        Log.i("nAME",nameP.toString())
+                    }
+                    reviewV = document.data.get("rating") as Double
+                    Log.i("RATING",reviewV.toString())
+                    var x = Pair(nameP,reviewV)
+                    infoListed.add(x)
+                    val reviewedAdapter = ReviewedAdapter(requireContext(),infoListed)
+                    visitedListView.adapter = reviewedAdapter
+                }
+            }
+
+        }
+
     }
 
     fun loadFragment(position: Int){
@@ -88,8 +121,8 @@ class VisitedFragment : Fragment() {
             }
     }
 
-    class ReviewedAdapter(context: Context, private val dataList: List<String>) :
-        ArrayAdapter<String>(context, 0, dataList) {
+    class ReviewedAdapter(context: Context, private val dataList: List<Pair<String?,Double?>>) :
+        ArrayAdapter<Pair<String?,Double?>>(context, 0, dataList) {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             var itemView = convertView
@@ -97,7 +130,10 @@ class VisitedFragment : Fragment() {
                 itemView = LayoutInflater.from(context).inflate(R.layout.visited_lv_item_noaction, parent, false)
             }
             val textView = itemView!!.findViewById<TextView>(R.id.reviewed_placeTitle)
-            textView.text = dataList[position]
+            val textView1 = itemView!!.findViewById<RatingBar>(R.id.reviewed_user_rating)
+
+            textView.text = dataList[position].first.toString()
+            textView1.rating = dataList[position].second!!.toFloat()
             return itemView
         }
     }
