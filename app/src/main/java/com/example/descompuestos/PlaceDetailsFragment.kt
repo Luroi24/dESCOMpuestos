@@ -1,17 +1,29 @@
 package com.example.descompuestos
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.ListView
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.lang.reflect.Type
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -22,10 +34,30 @@ class PlaceDetails : Fragment() {
     var rating: String? = ""
     lateinit var placeImg: List<String>
 
+    var reviewTest = arrayListOf<Review>()
+    var dataReviews = mutableListOf<Review>();
+
+
+
+    private fun setReviews(){
+        var testing1 : String = "";
+        val preferences : SharedPreferences? = this.activity?.getSharedPreferences("AppData",0);
+        if(preferences != null){
+            testing1 = preferences.getString("reviews",null).toString()
+        }
+        var gson1 = Gson()
+        val type1: Type = object : TypeToken<ArrayList<Review?>?>() {}.getType()
+        val reviewEnFragmento : ArrayList<Review> = gson1.fromJson(testing1,type1)
+        reviewTest = reviewEnFragmento;
+    }
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setReviews();
         // Inflate the layout for this fragment
         val data = arguments
         placeId = data?.getInt("id")
@@ -36,6 +68,15 @@ class PlaceDetails : Fragment() {
         if (aux != null) {
             placeImg = aux.toList()
         }
+        Log.i("PLACEID", placeId.toString())
+        dataReviews.clear()
+        reviewTest.forEach {
+            it->
+            if(it.idPlace.toInt() == placeId){
+                dataReviews.add(it);
+            }
+        }
+
         return inflater.inflate(R.layout.fragment_place_details, container, false)
     }
 
@@ -62,22 +103,43 @@ class PlaceDetails : Fragment() {
 
         // Setting the stuff for the reviews listview
         val reviewsListView = view.findViewById<ListView>(R.id.pd_reviews)
-        val dataList = listOf("Test", "Test2", "Test3","Test", "Test2", "Test3")
-        val reviewsAdapter = CustomAdapter(requireContext(), dataList)
+
+        //Continuar aqui
+
+        //val dataList = listOf("Test", "Test2", "Test3","Test", "Test2", "Test3")
+        val reviewsAdapter = CustomAdapter(requireContext(), dataReviews)
         reviewsListView.adapter = reviewsAdapter
     }
 }
 
-class CustomAdapter(context: Context, private val dataList: List<String>) :
-    ArrayAdapter<String>(context, 0, dataList) {
-
+class CustomAdapter(context: Context, private val dataList: List<Review>) :
+    ArrayAdapter<Review>(context, 0, dataList) {
+    val db = Firebase.firestore
+    val user = Firebase.auth
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var itemView = convertView
         if (itemView == null) {
             itemView = LayoutInflater.from(context).inflate(R.layout.place_details_review, parent, false)
         }
         val textView = itemView!!.findViewById<TextView>(R.id.pd_review_username)
-        textView.text = dataList[position]
+        val textView1 = itemView.findViewById<TextView>(R.id.pd_user_review)
+        val imageV = itemView.findViewById<ImageView>(R.id.pd_user_img)
+        val userRat = itemView.findViewById<RatingBar>(R.id.pd_user_rating)
+        var imgLink : String = "";
+        db.collection("users").whereEqualTo("id",dataList[position].userID).get().addOnSuccessListener {
+            task ->
+            for(document in task){
+                imgLink = document.data.get("profileURL").toString()
+                Glide.with(itemView!!)
+                    .load(imgLink)
+                    .into(imageV!!)
+            }
+        }
+
+        textView?.text = dataList[position].userName
+        textView1?.text = dataList[position].description
+        userRat.rating = dataList[position].rating.toFloat()
+
         return itemView
     }
 }

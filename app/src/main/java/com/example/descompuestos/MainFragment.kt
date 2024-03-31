@@ -56,18 +56,22 @@ class MainFragment : Fragment() {
      */
 
     private fun setData(){
-        //var imgUrls = arrayListOf<String>();
-        var x : List<String>? = null;
-        var y : List<String>? = null;
+
         var testing : String = "";
+
         val preferences : SharedPreferences? = this.activity?.getSharedPreferences("AppData",0);
         if(preferences != null){
             testing = preferences.getString("test",null).toString()
         }
         var gson = Gson()
         val type: Type = object : TypeToken<ArrayList<Store?>?>() {}.getType()
+
+
         val pruebaEnFragmento : ArrayList<Store> = gson.fromJson(testing,type)
-        itemsTest = pruebaEnFragmento;
+
+
+        itemsTest = pruebaEnFragmento
+
     }
 
 
@@ -110,7 +114,7 @@ class MainFragment : Fragment() {
             object : MyAdapter.OnItemClickListener {
                 override fun onItemClick(position: Int) {
                     val bundle = Bundle()
-                    bundle.putInt("id",position)
+                    bundle.putInt("id",itemsTest[position].idPlace.toInt())
                     bundle.putString("title", itemsTest[position].storeName)
                     bundle.putStringArrayList("imgUrls", ArrayList(itemsTest[position].imageLinks))
                     bundle.putString("description", itemsTest[position].description)
