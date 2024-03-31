@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.compose.ui.text.substring
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -155,8 +156,8 @@ class CustomAdapter(context: Context, private val dataList: List<Review>) :
                     .into(imageV!!)
             }
         }
-
-        textView?.text = dataList[position].userName
+        if(dataList[position].userName.length > 16) {textView?.text = dataList[position].userName.substring(0,16)}
+        else  {textView?.text = dataList[position].userName}
         textView1?.text = dataList[position].description
         userRat.rating = dataList[position].rating.toFloat()
 

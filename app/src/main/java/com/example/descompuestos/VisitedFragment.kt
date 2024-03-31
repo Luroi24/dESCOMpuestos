@@ -2,6 +2,7 @@ package com.example.descompuestos
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -12,14 +13,24 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.RatingBar
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.IOException
+import java.lang.reflect.Type
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sqrt
 
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
@@ -27,17 +38,27 @@ private const val ARG_PARAM2 = "param2"
 class VisitedFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
+    lateinit var database: MMDatabase
 
 
-    val dataList = listOf("toReview", "toReview2", "toReview3","toReview4", "toReview5", "toReview6")
+    //val dataList = listOf("toReview", "toReview2", "toReview3","toReview4", "toReview5", "toReview6")
 
+    private val dataListU = mutableSetOf<Pair<String,Int>>()
+    private var dataList = mutableListOf<Pair<String,Int>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+
+
         super.onCreate(savedInstanceState)
         arguments?.let {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        Log.i("Size of DATA", dataListU.size.toString())
+
+
+
     }
 
     override fun onCreateView(
@@ -54,12 +75,51 @@ class VisitedFragment : Fragment() {
 
         // Setting up the list of pending to review places
         val reviewsListView = view.findViewById<ListView>(R.id.listOfPlaces)
-        val reviewsAdapter = CustomAdapter(requireContext(), dataList)
-        reviewsListView.adapter = reviewsAdapter
-        reviewsListView.setOnItemClickListener { parent, view, position, id ->
-            // Load the fragment based on the clicked item
-            loadFragment(position)
+
+
+
+
+        var testing : String = "";
+        var x : List<LocationEntity>? = null;
+
+        val preferences : SharedPreferences? = this.activity?.getSharedPreferences("AppData",0);
+        if(preferences != null){
+            testing = preferences.getString("test",null).toString()
         }
+        var gson = Gson()
+        val type: Type = object : TypeToken<ArrayList<Store?>?>() {}.getType()
+
+
+        val pruebaEnFragmento : ArrayList<Store> = gson.fromJson(testing,type)
+
+
+        database = Room.databaseBuilder(requireActivity().applicationContext, MMDatabase::class.java, "coordinates").build()
+        lifecycleScope.launch(Dispatchers.IO){
+            x = database.locationDao().getAllLocations()
+            Log.i("visited",x?.get(0).toString())
+            x?.forEach{
+                    it1->
+                pruebaEnFragmento.forEach {
+                        it->
+                    var distance = sqrt((it.coordinates.first-it1.latitude)*(it.coordinates.first-it1.latitude) - (it.coordinates.second-it1.longitude)*(it.coordinates.second-it1.longitude))
+                    Log.i("distance", distance.toString())
+                    if( distance.toLong() <= 0.5){
+                        Log.i("added to list",it.storeName)
+                        dataListU.add(Pair(it.storeName,it.idPlace.toInt()))
+                    }else{
+                        Log.i("no","no")
+                    }
+
+                }
+            }
+            dataListU.forEach {
+                    it->
+                dataList.add(it)
+            }
+
+        }
+
+
 
         // Setting up list of visited places
         val visitedListView = view.findViewById<ListView>(R.id.listOfPlacesReviewed)
@@ -87,17 +147,24 @@ class VisitedFragment : Fragment() {
                     infoListed.add(x)
                     val reviewedAdapter = ReviewedAdapter(requireContext(),infoListed)
                     visitedListView.adapter = reviewedAdapter
+
+
+                    val reviewsAdapter = CustomAdapter(requireContext(), dataList)
+                    reviewsListView.adapter = reviewsAdapter
+
+                    reviewsListView.setOnItemClickListener { parent, view, position, id ->
+                        // Load the fragment based on the clicked item
+                        loadFragment(position)
+                    }
                 }
             }
-
         }
-
     }
 
     fun loadFragment(position: Int){
         val bundle = Bundle()
-        bundle.putInt("id", 2)
-        bundle.putString("cafeteriaTitle", dataList[position])
+        bundle.putInt("id", dataList[position].second)
+        bundle.putString("cafeteriaTitle", dataList[position].first)
         val fragment = WriteRatingFragment()
         fragment.arguments = bundle
         val transaction = requireActivity().supportFragmentManager.beginTransaction()
@@ -135,16 +202,15 @@ class VisitedFragment : Fragment() {
         }
     }
 
-    class CustomAdapter(context: Context, private val dataList: List<String>) :
-        ArrayAdapter<String>(context, 0, dataList) {
-
+    class CustomAdapter(context: Context, private val dataList: List<Pair<String,Int>>) :
+        ArrayAdapter<Pair<String,Int>>(context, 0, dataList) {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             var itemView = convertView
             if (itemView == null) {
                 itemView = LayoutInflater.from(context).inflate(R.layout.visited_lv_item, parent, false)
             }
             val textView = itemView!!.findViewById<TextView>(R.id.visited_placeTitle)
-            textView.text = dataList[position]
+            textView.text = dataList[position].first
             return itemView
         }
     }
