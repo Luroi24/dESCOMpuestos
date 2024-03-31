@@ -15,30 +15,40 @@ MadridMug is the mobile application any coffee lover should have installed on th
 <table>
   <tr>
     <td>
-      <img src="img/nav1.png" width="80%" alt="Describe here image 1"/>
-      <p align="center">Describe here image 1</p>
+      <img src="https://github.com/Luroi24/dESCOMpuestos/assets/78554741/e9028265-f1f4-4455-a079-daeb56944612" width="80%" alt="Starting Page"/>
+      <p align="center">The starting page. It's intended as a minimalistic design to attract the user. Here they can log in to their account. It's the only way to access the app.</p>
     </td>
     <td>
-      <img src="img/nav2.png" width="80%" alt="Describe here image 2"/>
-      <p align="center">Describe here image 2</p>
-    </td>
-  </tr>
-  <tr>
-    <td>
-      <img src="img/nav3.png" width="80%" alt="Describe here image 3"/>
-      <p align="center">Describe here image 3</p>
-    </td>
-    <td>
-      <img src="img/nav4.png" width="80%" alt="Describe here image 4"/>
-      <p align="center">Describe here image 4</p>
+      <img src="https://github.com/Luroi24/dESCOMpuestos/assets/78554741/f241a564-6355-4c4d-a1d6-ad3a2e9666e3" width="80%" alt="Log In Menu"/>
+      <p align="center">In the log-in menu, users can choose to log in using their Google account or a personal email and create an account under our database.</p>
     </td>
   </tr>
   <tr>
     <td>
-      <img src="img/nav6.png" width="80%" alt="Describe here image 5"/>
-      <p align="center">Describe here image 5</p>
+      <img src="https://github.com/Luroi24/dESCOMpuestos/assets/78554741/4e488d12-a73b-429a-bd9b-9a064f0ea34d" width="80%" alt="Main Page"/>
+      <p align="center">Once the user has logged-in, they can see all the popular cafeterias we have registered in out database as well as the nearby cafeterias. It also shows the district they are currently in.</p>
     </td>
     <td>
+      <img src="https://github.com/Luroi24/dESCOMpuestos/assets/78554741/a1d08bc1-2819-4ab1-b51f-642c9a5accbe" width="80%" alt="Map menu option"/>
+      <p align="center">The map menu option shows a generic OSM map, specifying the user current location with a personalized logo as well as the nearest cafeterias to their current location (which also is shown as a personalized logo)</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/Luroi24/dESCOMpuestos/assets/78554741/58b5651c-ef81-43bf-a0d6-8fdcc952b027" width="80%" alt="Profile menu option"/>
+      <p align="center">The profile menu option shows the users shared preferences, for instance, their username, email, country and picture</p>
+    </td>
+    <td>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img src="https://github.com/Luroi24/dESCOMpuestos/assets/78554741/746c4a16-4f4d-4ff0-86db-da29e1f93221" width="80%" alt="Cafeteria details fragment"/>
+      <p align="center">The cafeteria details fragments show all the details about the cafeteria that the user has selected. It show up to three images (which you can see if you slide your finger across them), a short description, and all the users' reviews. </p>
+    </td>
+    <td>
+      <img src="https://github.com/Luroi24/dESCOMpuestos/assets/78554741/0842be15-ac99-47ed-b78f-00fbaf25bf5a" width="80%" alt="Route to the cafeteria button"/>
+      <p align="center">If the user chooses to, they can see the location of the cafeteria and a map will pop up, with a simple straight line showing how far they are from it.</p>
     </td>
   </tr>
 </table>
@@ -46,9 +56,8 @@ MadridMug is the mobile application any coffee lover should have installed on th
 
 
 ## Demo Video
-Video demonstrating how the app works (Max 1 video of 1 minute), upload it to a platform like YouTube or Vimeo (it might also work with Stream) and link it here:  
 <a href="https://vimeo.com/410664338?share=copy">
-<img src="img/thumb.png" alt="Noise meter app" width="100" /> 
+  Click here to watch the demo video!
 </a>
 
 ## Features
@@ -66,7 +75,7 @@ Technical features of MadridMug
 - Firebase authentication
 - Maps: Openstreetmaps
 - Madrid's Community restaurants API
-- Toolbar menu
+- Bottom Navigation Menu
 - Image management with glide
 - GPS Coordinates 
 - Fragments
@@ -74,9 +83,17 @@ Technical features of MadridMug
 - Bundles
 
 ## How to Use
-Provide instructions on how to get started with the app as user. 
+### Firt steps
+The user must first create an account to access the app. They can choose to do so using a personal email or directly link their Google account. Once they've done it, they have full access to MadridMug, where they can search for cafeterias and leave reviews, only if they have visited them!
+### Playing around
+The cafeteria details:
+The user may choose to click on one of the cafeterias under the "popular" or the "near you" category. It will show the details of the selected cafeteria which contains more images, other users' reviews, and a short description and allows them to see how far apart from the cafeteria they are. They can also tap on the "View on Map" button, which will display a map with their current location and the location of the cafeteria; tracing a simple straight line between them.
+The map menu option:
+The user can choose to tap on the menu option of the bottom navigation menu. It will show them a simple instance of an open street map that shows them their current location as well as the nearest cafeterias to them.
+The profile menu option:
+The user can see their shared preferences in this section.
 
 ## Participants
 List of MAD developers:
-- Luis Eduardo Ascencio Rangel (emailmemmber1@alumunos.upm.es)
-- Daniel Alejandro Romero Duran (emailmemmber1@alumunos.upm.es) 
+- Luis Eduardo Ascencio Rangel (le.acencio.rangel@alumunos.upm.es)
+- Daniel Alejandro Romero Duran (daniel.romero@alumunos.upm.es) 
