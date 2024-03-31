@@ -29,9 +29,6 @@ class VisitedFragment : Fragment() {
     private var param2: String? = null
 
 
-
-
-
     val dataList = listOf("toReview", "toReview2", "toReview3","toReview4", "toReview5", "toReview6")
 
 

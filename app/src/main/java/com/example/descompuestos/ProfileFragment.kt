@@ -5,8 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.res.fontResource
+import com.bumptech.glide.Glide
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -40,9 +46,55 @@ class ProfileFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val db = Firebase.firestore
+        val user = Firebase.auth
+        val userName = user.currentUser?.displayName
+        val userEmail = user.currentUser?.email
+        val userID = user.currentUser?.uid
+        var userImage : String = ""
+        var userLocation :String =""
+
+
+        var finalName : String = "";
+        var finalLastName : String ="";
+        var counter : Int = 0;
+        userName!!.forEach{ it->
+            if(counter < 2){
+            finalName += it
+            }
+            else{
+                finalLastName += it;
+            }
+            if(it == ' ') counter++;
+        }
+
         super.onViewCreated(view, savedInstanceState)
+
         val usernameTV = view.findViewById<TextView>(R.id.firstNameET)
-        usernameTV.text = getUserID()
+        val lastNameTV = view.findViewById<TextView>(R.id.lastNameET)
+        val emailTV = view.findViewById<TextView>(R.id.emailET)
+        val countryTV = view.findViewById<TextView>(R.id.countryET)
+        val imgTV = view.findViewById<ImageView>(R.id.userIMG)
+
+        db.collection("users").whereEqualTo("id",userID).get().addOnSuccessListener {
+                it ->
+            userImage = it.documents[0].get("profileURL").toString()
+            userLocation = it.documents[0].get("location").toString()
+
+            Glide.with(requireView())
+                .load(userImage)
+                .into(imgTV!!)
+
+            countryTV.text = userLocation
+        }
+
+        usernameTV.text = finalName
+        lastNameTV.text = finalLastName
+        emailTV.text = userEmail
+
+
+
+
     }
 
     private fun getUserID():String?{
