@@ -61,20 +61,19 @@ MadridMug is the mobile application any coffee lover should have installed on th
 </a>
 
 ## Features
-Functional features od MadridMug
+Functional features of MadridMug
 - Search for popular cafeterias.
 - Search for nearby cafeterias.
-- Interactive maps.
-- Read other users reviews.
-<br/><br/>
-Technical features of MadridMug
-- Persistence in csv/text file
+- Interactive maps with OpenStreetMap.
+- Read other users reviews. <br/><br/>
+Technical features of MadridMug:
+- Persistence in CSV/text file
 - Persistence in shared preferences
 - Persistence in Room database.
-- Firebase Realtime database
+- Firebase real-time database
 - Firebase authentication
 - Maps: Openstreetmaps
-- Madrid's Community restaurants API
+- Madrid's Community Restaurants API
 - Bottom Navigation Menu
 - Image management with glide
 - GPS Coordinates 
@@ -86,14 +85,14 @@ Technical features of MadridMug
 ### Firt steps
 The user must first create an account to access the app. They can choose to do so using a personal email or directly link their Google account. Once they've done it, they have full access to MadridMug, where they can search for cafeterias and leave reviews, only if they have visited them!
 ### Playing around
-The cafeteria details:
-The user may choose to click on one of the cafeterias under the "popular" or the "near you" category. It will show the details of the selected cafeteria which contains more images, other users' reviews, and a short description and allows them to see how far apart from the cafeteria they are. They can also tap on the "View on Map" button, which will display a map with their current location and the location of the cafeteria; tracing a simple straight line between them.
-The map menu option:
-The user can choose to tap on the menu option of the bottom navigation menu. It will show them a simple instance of an open street map that shows them their current location as well as the nearest cafeterias to them.
-The profile menu option:
+The cafeteria details:<br/>
+The user may choose to click on one of the cafeterias under the "popular" or the "near you" category. It will show the details of the selected cafeteria which contains more images, other users' reviews, and a short description and allows them to see how far apart from the cafeteria they are. They can also tap on the "View on Map" button, which will display a map with their current location and the location of the cafeteria; tracing a simple straight line between them.<br/>
+The map menu option:<br/>
+The user can choose to tap on the menu option of the bottom navigation menu. It will show them a simple instance of an open street map that shows them their current location as well as the nearest cafeterias to them.<br/>
+The profile menu option:<br/>
 The user can see their shared preferences in this section.
 
 ## Participants
-List of MAD developers:
+MAD developers:
 - Luis Eduardo Ascencio Rangel (le.acencio.rangel@alumunos.upm.es)
 - Daniel Alejandro Romero Duran (daniel.romero@alumunos.upm.es) 
