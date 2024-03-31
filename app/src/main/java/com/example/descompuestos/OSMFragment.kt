@@ -1,5 +1,6 @@
 package com.example.descompuestos
 
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -10,14 +11,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polyline
+import java.lang.reflect.Type
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -30,6 +34,10 @@ class OSMFragment : Fragment() {
     private var param2: String? = null
     private var TAG = "Open Street Map Activity"
     private var map: MapView? = null
+    var cafLatitude: Double? = null
+    var cafLongitude: Double? = null
+    var title: String? = ""
+
     private val oneDayInMadrid = listOf(
         GeoPoint(40.41845936702104, -3.69652793926266), // Círculo de Bellas Artes
         GeoPoint(40.420258671427085, -3.705530552913505), // Gran Vía hasta Callao
@@ -69,6 +77,9 @@ class OSMFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        val data = arguments
+        cafLatitude = data?.getDouble("latitude")
+        cafLongitude = data?.getDouble("longitude")
         return inflater.inflate(R.layout.fragment_o_s_m, container, false)
     }
 
@@ -87,12 +98,37 @@ class OSMFragment : Fragment() {
         val startPoint = location?.let { GeoPoint(it.latitude, location.longitude) }
         //val startPoint = GeoPoint(40.416775, -3.703790) in case you want to test it mannualy
         mapView.controller.setCenter(startPoint)
-        addMarker(mapView, startPoint, "Current location")
+        addMarkerMe(mapView, startPoint, "Current location")
+        if (cafLatitude!=null && cafLongitude !=null){
+            val auxPoint = GeoPoint(cafLatitude!!,cafLongitude!!)
+            addMarkersAndRoute(mapView,listOf(startPoint,auxPoint), listOf("Current location", title))
+        }else{
+            println("Estoy aquí")
+
+            var nearbyCafesCoordinates: List<GeoPoint?> = listOf(startPoint)
+            var nearbyCafesNames: List<String> = listOf("Current location")
+
+            val cafeterias: ArrayList<Store> = getData()
+            for (cafeteria in cafeterias){
+                println("Cafe coords: ${cafeteria.coordinates.first}, ${cafeteria.coordinates.second}")
+                println("Loc coords: ${location?.latitude}, ${location?.longitude}")
+                if (location != null) {
+                    if (cafeteria.coordinates.first <= (location.latitude+0.02) && cafeteria.coordinates.first >= (location.latitude-0.02)){ // Latitude is below North and above South
+                        if(cafeteria.coordinates.second <= (location.longitude+0.02) && cafeteria.coordinates.second >= (location.longitude-0.02)){
+                            nearbyCafesCoordinates = nearbyCafesCoordinates + GeoPoint(cafeteria.coordinates.first, cafeteria.coordinates.second)
+                            nearbyCafesNames = nearbyCafesNames + cafeteria.storeName
+                        }
+                    }
+                }
+            }
+            addMarkers(mapView,nearbyCafesCoordinates,nearbyCafesNames)
+
+        }
         //addMarkers(map,oneDayInMadrid, oneDayInMadridNames)
-        addMarkersAndRoute(mapView,oneDayInMadrid, oneDayInMadridNames)
+        //addMarkersAndRoute(mapView,oneDayInMadrid, oneDayInMadridNames)
         val initialLocation = GeoPoint(40.7128, -74.0060) // Coordinates of New York City
         mapView.controller.setCenter(startPoint)
-        mapView.controller.setZoom(18.0)
+        mapView.controller.setZoom(17.0)
     }
 
     companion object {
@@ -106,6 +142,20 @@ class OSMFragment : Fragment() {
             }
     }
 
+    private fun addMarkerMe(mapView: MapView, point: GeoPoint?, title: String){
+        val marker = Marker(mapView)
+        val newWidth = 200
+        val newHeight = 200
+        val iconOriginal: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.coffee_drinker)
+        val iconCoffee = Bitmap.createScaledBitmap(iconOriginal,newWidth,newHeight, false)
+        marker.position = point
+        marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        marker.title = title
+        marker.icon = BitmapDrawable(resources, iconCoffee)
+        mapView.overlays.add(marker)
+        mapView.invalidate() // This makes the map reload.
+    }
+
     private fun addMarker(mapView: MapView, point: GeoPoint?, title: String){
         val marker = Marker(mapView)
         marker.position = point
@@ -115,17 +165,38 @@ class OSMFragment : Fragment() {
         mapView.invalidate() // This makes the map reload.
     }
 
-    private fun addMarkers(mapView: MapView, locationsCoords: List<GeoPoint>, locationsNames: List<String>){
-        for(location in locationsCoords){
+    private fun addMarkers(mapView: MapView, locationsCoords: List<GeoPoint?>, locationsNames: List<String>){
+        if (locationsCoords.size != locationsNames.size){
+            Log.e("addMarkersAndRoute", "Locations and names list must have the same number of elements")
+            return
+        }
+
+        val icCameraOriginal: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_camera)
+        val newWidth = 200
+        val newHeight = 200
+
+        val icCameraResized = Bitmap.createScaledBitmap(icCameraOriginal,newWidth,newHeight, false)
+
+        var isFirst:Boolean = true
+        for (location in locationsCoords){
+            if(isFirst){
+                isFirst = false
+                continue
+            }
             val marker = Marker(mapView)
             marker.position = location
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            val locationIndex = locationsCoords.indexOf(location)
+            if (location != null) {
+                marker.title = "Marker at ${locationsNames[locationIndex]} ${location.latitude}, ${location.longitude}"
+            }
+            marker.icon = BitmapDrawable(resources, icCameraResized)
             mapView.overlays.add(marker)
         }
         mapView.invalidate()
     }
 
-    private fun addMarkersAndRoute(mapView: MapView, locationsCoords: List<GeoPoint>, locationsNames: List<String>){
+    private fun addMarkersAndRoute(mapView: MapView, locationsCoords: List<GeoPoint?>, locationsNames: List<String?>){
         if (locationsCoords.size != locationsNames.size){
             Log.e("addMarkersAndRoute", "Locations and names list must have the same number of elements")
             return
@@ -138,18 +209,24 @@ class OSMFragment : Fragment() {
         // TODO: Refactor this code.
 
         val icCameraOriginal: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.ic_camera)
-        val newWidth = 300
-        val newHeight = 300
+        val newWidth = 200
+        val newHeight = 200
 
         val icCameraResized = Bitmap.createScaledBitmap(icCameraOriginal,newWidth,newHeight, false)
 
-
+        var isFirst:Boolean = true
         for (location in locationsCoords){
+            if(isFirst){
+                isFirst = false
+                continue
+            }
             val marker = Marker(mapView)
             marker.position = location
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             val locationIndex = locationsCoords.indexOf(location)
-            marker.title = "Marker at ${locationsNames[locationIndex]} ${location.latitude}, ${location.longitude}"
+            if (location != null) {
+                marker.title = "Marker at ${locationsNames[locationIndex]} ${location.latitude}, ${location.longitude}"
+            }
             marker.icon = BitmapDrawable(resources, icCameraResized)
             mapView.overlays.add(marker)
         }
@@ -162,5 +239,63 @@ class OSMFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         map?.onPause()
+    }
+
+    fun getQuadrantCoordinates(mapView: MapView): Map<String, BoundingBox> {
+        val visibleBoundingBox = mapView.boundingBox
+
+        val topRightLat = visibleBoundingBox.latNorth
+        val topRightLon = visibleBoundingBox.lonEast
+
+        val bottomLeftLat = visibleBoundingBox.latSouth
+        val bottomLeftLon = visibleBoundingBox.lonWest
+
+        println("TR_Lon: ${topRightLon}, TR_Lat: ${topRightLat}, BL_Lat: ${bottomLeftLat}")
+
+        val topRightQuadrant = BoundingBox(topRightLat, topRightLon, visibleBoundingBox.latNorth, visibleBoundingBox.lonEast)
+        val topLeftQuadrant = BoundingBox(topRightLat, visibleBoundingBox.lonWest, visibleBoundingBox.latNorth, bottomLeftLon)
+        val bottomLeftQuadrant = BoundingBox(bottomLeftLat, visibleBoundingBox.lonWest, bottomLeftLat, topRightLon)
+        val bottomRightQuadrant = BoundingBox(bottomLeftLat, topRightLon, bottomLeftLat, visibleBoundingBox.lonEast)
+
+        val quadrants = hashMapOf<String, BoundingBox>()
+        quadrants["TopRight"] = topRightQuadrant
+        quadrants["TopLeft"] = topLeftQuadrant
+        quadrants["BottomLeft"] = bottomLeftQuadrant
+        quadrants["BottomRight"] = bottomRightQuadrant
+
+        return quadrants
+    }
+
+    fun getBoundingBoxCoordinates(box: BoundingBox?): Map<String, Double> {
+        val coordinates = hashMapOf<String, Double>()
+        if (box != null) {
+            coordinates["LatitudeNorth"] = box.latNorth
+        }
+        if (box != null) {
+            coordinates["LongitudeEast"] = box.lonEast
+        }
+        if (box != null) {
+            coordinates["LatitudeSouth"] = box.latSouth
+        }
+        if (box != null) {
+            coordinates["LongitudeWest"] = box.lonWest
+        }
+
+        return coordinates
+    }
+
+    private fun getData(): ArrayList<Store>{
+        //var imgUrls = arrayListOf<String>();
+        var x : List<String>? = null;
+        var y : List<String>? = null;
+        var testing : String = "";
+        val preferences : SharedPreferences? = this.activity?.getSharedPreferences("AppData",0);
+        if(preferences != null){
+            testing = preferences.getString("test",null).toString()
+        }
+        var gson = Gson()
+        val type: Type = object : TypeToken<ArrayList<Store?>?>() {}.getType()
+        val items : ArrayList<Store> = gson.fromJson(testing,type)
+        return items
     }
 }

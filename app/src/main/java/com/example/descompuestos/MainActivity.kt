@@ -1,7 +1,9 @@
 package com.example.descompuestos
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -13,6 +15,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.room.Room
 import com.example.descompuestos.databinding.ActivityMainBinding
 import com.google.firebase.firestore.ktx.firestore
 import com.google.gson.Gson
@@ -23,6 +27,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.lang.reflect.Type
+import java.util.Locale
 
 
 class Store(
@@ -42,6 +47,7 @@ class MainActivity : AppCompatActivity(), LocationListener {
     private var coordsInfo: String = "Not set yet"
     private val locationPermissionCode = 2
     private var latestLocation: Location? = null
+    lateinit var database: MMDatabase
 
     private fun askForUserId(){
 
@@ -56,12 +62,12 @@ class MainActivity : AppCompatActivity(), LocationListener {
                     val userInput =  input.text.toString()
                     if (userInput.isNotBlank()){
                         saveUserID(userInput)
-                        Toast.makeText(
+                        /*Toast.makeText(
                             this,
                             "UserID saved: $userInput",
                             Toast.LENGTH_LONG
 
-                        ).show();
+                        ).show(); */
 
                     } else Toast.makeText(this, "User ID cannot be blank", Toast.LENGTH_LONG).show();
                 }.setNegativeButton("Cancel",null).show()
@@ -207,6 +213,8 @@ class MainActivity : AppCompatActivity(), LocationListener {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,5000,5f,this);
         }
 
+        database = Room.databaseBuilder(applicationContext, MMDatabase::class.java, "coordinates").build()
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         replaceFragment(MainFragment())
@@ -244,12 +252,39 @@ class MainActivity : AppCompatActivity(), LocationListener {
     override fun onLocationChanged(location: Location) {
         //val textView: TextView = findViewById(R.id.tvInfo)
         this.latestLocation = location
-        Toast.makeText(this, "New coordinates: [${location.latitude},${location.longitude}]", Toast.LENGTH_LONG).show()
+        //Toast.makeText(this, "Location: ${getLocalityName(this,location.latitude, location.longitude)}", Toast.LENGTH_LONG).show()
         //textView.text = "Latitude: [${location.latitude}]\nLongitude: [${location.longitude}]\nUserId: [${getUserID()}]"
         saveCoordinatesToFile(location.latitude, location.longitude)
+        val newLocation = LocationEntity(
+            latitude = location.latitude,
+            longitude = location.longitude,
+            timestamp = System.currentTimeMillis()
+        )
+        lifecycleScope.launch(Dispatchers.IO){
+            database.locationDao().insertLocation(newLocation)
+        }
         coordsInfo = "Latitude: [${location.latitude}]\nLongitude: [${location.longitude}]\nUserId: [${getUserID()}]"
+        getLocalityName(this, location.latitude, location.longitude)
     }
 
+    fun getLocalityName(context: Context, latitude: Double, longitude: Double): String {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        val addresses = geocoder.getFromLocation(latitude,longitude,1)
+
+        return if (!addresses.isNullOrEmpty()) {
+            val address = addresses[0]
+            val addressComponents = address.getAddressLine(0).split(", ")
+            if (addressComponents.size >= 3) {
+                Log.i(TAG,addressComponents[0])
+                coordsInfo = addressComponents[0]
+                coordsInfo
+            } else {
+                "District not found"
+            }
+        } else {
+            "District not found"
+        }
+    }
     private fun saveCoordinatesToFile(latitude: Double, longitude: Double) {
         val fileName = "gps_coordinates.csv"
         val file = File(filesDir, fileName)

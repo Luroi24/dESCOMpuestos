@@ -1,12 +1,14 @@
 package com.example.descompuestos
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +22,8 @@ class PlaceDetails : Fragment() {
     var title: String? = ""
     var description: String? = ""
     var rating: String? = ""
+    var latitude: Double? = null
+    var longitude: Double? = null
     lateinit var placeImg: List<String>
 
     override fun onCreateView(
@@ -32,6 +36,8 @@ class PlaceDetails : Fragment() {
         title = data?.getString("title")
         description = data?.getString("description")
         rating = data?.getString("rating")
+        latitude = data?.getDouble("latitude")
+        longitude = data?.getDouble("longitude")
         var aux = data?.getStringArrayList("imgUrls")
         if (aux != null) {
             placeImg = aux.toList()
@@ -65,6 +71,20 @@ class PlaceDetails : Fragment() {
         val dataList = listOf("Test", "Test2", "Test3","Test", "Test2", "Test3")
         val reviewsAdapter = CustomAdapter(requireContext(), dataList)
         reviewsListView.adapter = reviewsAdapter
+
+        val buttonMap: Button = view.findViewById(R.id.buttonMap)
+        buttonMap.setOnClickListener{
+            val bundle = Bundle()
+            bundle.putString("title",title)
+            latitude?.let { it1 -> bundle.putDouble("latitude", it1) }
+            longitude?.let { it1 -> bundle.putDouble("longitude", it1) }
+            val fragment = OSMFragment()
+            fragment.arguments = bundle
+            val transaction = requireActivity().supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.mainFrameLayout, fragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
+        }
     }
 }
 

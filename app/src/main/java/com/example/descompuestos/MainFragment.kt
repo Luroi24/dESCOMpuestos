@@ -87,9 +87,15 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity: MainActivity = activity as MainActivity
-        val myDataFromActivity: String = activity.getMyData()
-        val textView: TextView = view.findViewById(R.id.tvInfo)
-        textView.text = myDataFromActivity
+        var myDataFromActivity: String = activity.getMyData()
+        var myDataFromActivityDetailed = myDataFromActivity
+        val currentLocationTV: TextView = view.findViewById(R.id.currentLocation)
+        val headerDetailedLocationTV: TextView = view.findViewById(R.id.header_detailedLocation)
+        if(myDataFromActivityDetailed.length > 10) myDataFromActivityDetailed = myDataFromActivityDetailed.substring(0,9) + "..."
+        if(myDataFromActivity.length > 15) myDataFromActivity = myDataFromActivity.substring(0,14) + "..."
+        currentLocationTV.text = myDataFromActivity
+        headerDetailedLocationTV.text = myDataFromActivityDetailed
+
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -115,6 +121,8 @@ class MainFragment : Fragment() {
                     bundle.putStringArrayList("imgUrls", ArrayList(itemsTest[position].imageLinks))
                     bundle.putString("description", itemsTest[position].description)
                     bundle.putString("rating",itemsTest[position].ratingPlace.toString())
+                    bundle.putDouble("latitude",itemsTest[position].coordinates.first)
+                    bundle.putDouble("longitude",itemsTest[position].coordinates.second)
                     val fragment = PlaceDetails()
                     fragment.arguments = bundle
                     val transaction = requireActivity().supportFragmentManager.beginTransaction()
