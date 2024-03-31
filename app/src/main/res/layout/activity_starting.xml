@@ -43,6 +43,7 @@
         android:fontFamily="@font/inter_medium"
         android:text="Roast n'\nenjoy coffee"
         android:textAlignment="center"
+        android:textColor="#FFFFFF"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"

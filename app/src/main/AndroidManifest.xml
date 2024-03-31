@@ -22,7 +22,7 @@
             android:name=".UserAuthenticator"
             android:exported="false" />
         <activity
-            android:name=".StartingActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".OSMActivity"
@@ -34,7 +34,7 @@
             android:name=".SecondActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".StartingActivity"
             android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
